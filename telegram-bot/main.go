@@ -47,7 +47,7 @@ func help(ID int64) {
 }
 
 func welcome(user string, ID int64) {
-	bot.Send(tbot.NewMessage(ID, "Welcome @"+user+", please introduce yourself"))
+	bot.Send(tbot.NewMessage(ID, "Welcome "+user+", please introduce yourself"))
 }
 
 func kickUser(user int, ID int64) {
@@ -108,10 +108,16 @@ func main() {
 		}
 		if update.Message.NewChatMembers != nil {
 			for _, user := range *(update.Message.NewChatMembers) {
-				if user.IsBot {
+				if user.IsBot { 
 					go kickUser(user.ID, ID)
 				} else {
-					go welcome(user.String(), ID)
+					if user.UserName != nil{
+						go welcome(("@"+user.String()), ID)
+					}
+					else
+					{
+						go welcome(user.String(), ID)
+					}
 				}
 			}
 		}
