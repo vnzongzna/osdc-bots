@@ -47,15 +47,14 @@ func xkcd(ID int64) {
 	min := 100
 	max := 2000
 	randomnum := (rand.Intn(max-min+1) + min)
-	fmt.Println(randomnum)
 	xkcdurl := "https://xkcd.com/" + strconv.Itoa(randomnum)
 	resp, err := soup.Get(xkcdurl)
 	if err == nil {
 		doc := soup.HTMLParse(resp)
 		links := doc.Find("div", "id", "comic").FindAll("img")
 		for _, link := range links {
-			linkimg := link.Attrs()["src"]
-			fullurl := "https:" + linkimg
+			imglink := link.Attrs()["src"]
+			fullurl := "https:" + imglink
 			fmt.Println(fullurl)
 			bot.Send(tbot.NewMessage(ID, fullurl))
 		}
