@@ -56,11 +56,11 @@ func xkcd(ID int64) {
 			imglink := link.Attrs()["src"]
 			fullurl := "https:" + imglink
 			fmt.Println(fullurl)
-			bot.Send(tbot.NewMessage(ID, fullurl))
+			bot.Send(tbot.NewPhotoShare(ID, fullurl))
 		}
 	} else {
 		fullurl := "https://imgs.xkcd.com/comics/operating_systems.png"
-		bot.Send(tbot.NewPhotoUpload(ID, fullurl))
+		bot.Send(tbot.NewPhotoShare(ID, fullurl))
 	}
 
 }
@@ -138,6 +138,7 @@ func main() {
 				irc(ID)
 			case "xkcd":
 				xkcd(ID)
+
 			default:
 				bot.Send(tbot.NewMessage(ID, "I don't know that command"))
 			}
