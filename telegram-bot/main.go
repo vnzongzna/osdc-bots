@@ -26,6 +26,10 @@ func telegram(ID int64) {
 	bot.Send(tbot.NewMessage(ID, "https://t.me/jiitosdc"))
 }
 
+func twitter(ID int64) {
+	bot.Send(tbot.NewMessage(ID, "https://twitter.com/osdcjiit"))
+}
+
 func website(ID int64) {
 	bot.Send(tbot.NewMessage(ID, "https://osdc.netlify.com"))
 }
@@ -57,7 +61,7 @@ func xkcd(ID int64) {
 		}
 	} else {
 		fullurl := "https://imgs.xkcd.com/comics/operating_systems.png"
-		bot.Send(tbot.NewMessage(ID, fullurl))
+		bot.Send(tbot.NewPhotoUpload(ID, fullurl))
 	}
 
 }
@@ -66,9 +70,11 @@ func help(ID int64) {
 	msg := ` Use one of the following commands
 	/github - to get a link to OSDC's Github page.
 	/telegram - to get an invite link for OSDC's Telegram Group.
+	/twitter - to get the link of OSDC's twitter account.
 	/website - to get the link of the official website of OSDC.
 	/blog - to get the link of the OSDC blog.
 	/irc - to find us on IRC.
+	/xkcd - to get a xkcd comic for you.
 	To contribute to|modify this bot : https://github.com/vaibhavk/osdc-bots
 	`
 	bot.Send(tbot.NewMessage(ID, msg))
@@ -123,6 +129,8 @@ func main() {
 				github(ID)
 			case "telegram":
 				telegram(ID)
+			case "twitter":
+				twitter(ID)
 			case "website":
 				website(ID)
 			case "blog":
