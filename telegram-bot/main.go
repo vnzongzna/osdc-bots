@@ -3,9 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
+	"github.com/anaskhan96/soup"
 	tbot "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -33,6 +36,30 @@ func blog(ID int64) {
 
 func irc(ID int64) {
 	bot.Send(tbot.NewMessage(ID, "Join us on IRC server of Freenode at #jiit-lug. To get started refer our IRC wiki- https://github.com/osdc/community-committee/wiki/IRC ."))
+}
+
+func xkcd(ID int64) {
+	rand.Seed(time.Now().UnixNano())
+	min := 100
+	max := 2000
+	randomnum := (rand.Intn(max-min+1) + min)
+	fmt.Println(randomnum)
+	xkcdurl := "https://xkcd.com/" + strconv.Itoa(randomnum)
+	resp, err := soup.Get(xkcdurl)
+	if err == nil {
+		doc := soup.HTMLParse(resp)
+		links := doc.Find("div", "id", "comic").FindAll("img")
+		for _, link := range links {
+			linkimg := link.Attrs()["src"]
+			fullurl := "https:" + linkimg
+			fmt.Println(fullurl)
+			bot.Send(tbot.NewMessage(ID, fullurl))
+		}
+	} else {
+		fullurl := "https://imgs.xkcd.com/comics/operating_systems.png"
+		bot.Send(tbot.NewMessage(ID, fullurl))
+	}
+
 }
 
 func help(ID int64) {
@@ -102,13 +129,15 @@ func main() {
 				blog(ID)
 			case "irc":
 				irc(ID)
+			case "xkcd":
+				xkcd(ID)
 			default:
 				bot.Send(tbot.NewMessage(ID, "I don't know that command"))
 			}
 		}
 		if update.Message.NewChatMembers != nil {
 			for _, user := range *(update.Message.NewChatMembers) {
-				if ( user.IsBot && user.UserName!= 'osdcbot'){
+				if user.IsBot && user.UserName != "osdcbot" {
 					go kickUser(user.ID, ID)
 				} else {
 					go welcome(user, ID)
