@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -13,6 +16,26 @@ import (
 )
 
 var bot *tbot.BotAPI
+
+var finallist string //variable to store final list of meetups
+
+//-------structs to parse json data from Meetup API
+type venue struct {
+	Venue string `json:"name"`
+}
+type group struct {
+	GroupName string `json:"name"`
+}
+type meetuplist struct {
+	Name  string `json:"name"`
+	Venue venue  `json: "venue"`
+	Date  string `json:"local_date"`
+	Time  string `json:"local_time"`
+	Group group  `json: "group"`
+	Link  string `json:"link"`
+}
+
+//---------
 
 func start(ID int64) {
 	bot.Send(tbot.NewMessage(ID, "Hello , I'm OSDC Bot, Use /help to know more. To join OSDC group: https://t.me/jiitosdc"))
@@ -79,6 +102,33 @@ func help(ID int64) {
 	bot.Send(tbot.NewMessage(ID, msg))
 }
 
+//fetching details of meetup of the group's url
+func getmeetups(url string) {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	var meetups []meetuplist
+	json.Unmarshal([]byte(body), &meetups)
+	if (len(meetups)) > 0 {
+		finallist = finallist + meetups[0].Name + "\t" + meetups[0].Date + "\n"
+	}
+}
+
+//list of groups,keeps sending one by one to getmeetups()
+func ncrmeetups(ID int64) {
+	urlnames := []string{"ilugdelhi", "pydelhi", "GDGNewDelhi", "gdgcloudnd", "Paytm-Build-for-India", "jslovers", "Gurgaon-Go-Meetup", "Mozilla_Delhi", "PyDataDelhi", "React-Delhi-NCR", "OWASP-Delhi-NCR-Chapter"}
+	for _, each := range urlnames {
+		url := "http://api.meetup.com/" + each + "/events"
+		getmeetups(url)
+	}
+	bot.Send(tbot.NewMessage(ID, finallist))
+}
 func welcome(user tbot.User, ID int64) {
 	User := fmt.Sprintf("[%v](tg://user?id=%v)", user.FirstName, user.ID)
 	reply := tbot.NewMessage(ID, "**Welcome** "+User+", please introduce yourself")
@@ -138,6 +188,8 @@ func main() {
 				irc(ID)
 			case "xkcd":
 				xkcd(ID)
+			case "ncrmeetups":
+				ncrmeetups(ID)
 
 			default:
 				bot.Send(tbot.NewMessage(ID, "I don't know that command"))

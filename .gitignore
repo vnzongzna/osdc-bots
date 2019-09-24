@@ -1,4 +1,4 @@
 logs
 .exe
-.env
-main
+telegram-bot/.env
+telegram-bot/main
