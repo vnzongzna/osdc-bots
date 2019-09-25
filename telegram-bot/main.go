@@ -117,7 +117,7 @@ func getmeetups(url string) {
 	var meetups []meetuplist
 	json.Unmarshal([]byte(body), &meetups)
 	if (len(meetups)) > 0 {
-		finallist = finallist + meetups[0].Name + "\t" + meetups[0].Date + "\n"
+		finallist = finallist + "Title -" + "\t" + meetups[0].Name + "\n" + "Date -" + "\t" + meetups[0].Date + "\n" + "Link -" + "\t" + meetups[0].Link + "\n\n"
 	}
 }
 
