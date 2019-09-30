@@ -82,6 +82,7 @@ func help(ID int64) {
 
 //list of groups,keeps sending one by one to getmeetups()
 func ncrmeetups(ID int64) {
+	finallist = ""
 	urlnames := []string{"ilugdelhi", "pydelhi", "GDGNewDelhi", "gdgcloudnd", "Paytm-Build-for-India", "jslovers", "Gurgaon-Go-Meetup", "Mozilla_Delhi", "PyDataDelhi", "React-Delhi-NCR", "OWASP-Delhi-NCR-Chapter"}
 	for _, each := range urlnames {
 		url := "http://api.meetup.com/" + each + "/events"
