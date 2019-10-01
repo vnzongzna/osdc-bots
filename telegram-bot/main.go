@@ -90,6 +90,7 @@ func ncrmeetups(ID int64) {
 	}
 	bot.Send(tbot.NewMessage(ID, finallist))
 }
+
 func welcome(user tbot.User, ID int64) {
 	User := fmt.Sprintf("[%v](tg://user?id=%v)", user.FirstName, user.ID)
 	reply := tbot.NewMessage(ID, "**Welcome** "+User+", please introduce yourself")
@@ -152,6 +153,11 @@ func main() {
 				xkcd(ID)
 			case "ncrmeetups":
 				ncrmeetups(ID)
+			case "addmeetup":
+				messagetext := update.Message.Text
+				addmeetup(ID, messagetext)
+			case "getnextmeetup":
+				getnextmeetup(ID)
 
 			default:
 				bot.Send(tbot.NewMessage(ID, "I don't know that command"))
