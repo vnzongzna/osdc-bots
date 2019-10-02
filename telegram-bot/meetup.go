@@ -55,14 +55,19 @@ func getMeetups(url string) {
 
 func addmeetup(ID int64, msgtext string) {
 	args := strings.Fields(msgtext)
-	data := nextmeetup{
-		Name: args[1],
-		Date: args[2],
+	if len(args) == 3 {
+		data := nextmeetup{
+			Name: args[1],
+			Date: args[2],
+		}
+		file, _ := json.MarshalIndent(data, "", " ")
+		_ = ioutil.WriteFile("meetups.json", file, 0644)
+		bot.Send(tbot.NewMessage(ID, "Meetup added successfully."))
+	} else {
+		bot.Send(tbot.NewMessage(ID, "Please provide the details of meetup. Like /addmeetup <Title> <Date>"))
 	}
-	file, _ := json.MarshalIndent(data, "", " ")
-	_ = ioutil.WriteFile("meetups.json", file, 0644)
-	bot.Send(tbot.NewMessage(ID, "Meetup added successfully."))
 }
+
 func getnextmeetup(ID int64) {
 	file, _ := ioutil.ReadFile("meetups.json")
 	data := nextmeetup{}
