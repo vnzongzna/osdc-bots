@@ -62,7 +62,6 @@ func xkcd(ID int64) {
 		fullurl := "https://imgs.xkcd.com/comics/operating_systems.png"
 		bot.Send(tbot.NewPhotoShare(ID, fullurl))
 	}
-
 }
 
 func help(ID int64) {
@@ -98,6 +97,17 @@ func welcome(user tbot.User, ID int64) {
 	bot.Send(reply)
 }
 
+func memberdetails(ID int64, userid int) bool {
+	response, _ := bot.GetChatMember(tbot.ChatConfigWithUser{
+		ChatID: ID,
+		UserID: userid,
+	})
+	if response.Status == "creator" || response.Status == "admin" {
+		return true
+	} else {
+		return false
+	}
+}
 func kickUser(user int, ID int64) {
 	bot.KickChatMember(tbot.KickChatMemberConfig{
 		ChatMemberConfig: tbot.ChatMemberConfig{
@@ -115,14 +125,12 @@ func main() {
 		fmt.Println("error in auth")
 		log.Panic(err)
 	}
-
 	bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 	u := tbot.NewUpdate(0)
 	u.Timeout = 60
 	updates, _ := bot.GetUpdatesChan(u)
-
 	for update := range updates {
 		if update.Message == nil {
 			continue
@@ -154,11 +162,14 @@ func main() {
 			case "ncrmeetups":
 				ncrmeetups(ID)
 			case "addmeetup":
-				messagetext := update.Message.Text
-				addmeetup(ID, messagetext)
-			case "getnextmeetup":
-				getnextmeetup(ID)
-
+				check := memberdetails(ID, update.Message.From.ID)
+				if check == true {
+					addmeetup(ID, update.Message.Text)
+				} else {
+					bot.Send(tbot.NewMessage(ID, "Sorry, only admins can add the details of next meetup."))
+				}
+			case "nextmeetup":
+				nextmeetup(ID)
 			default:
 				bot.Send(tbot.NewMessage(ID, "I don't know that command"))
 			}

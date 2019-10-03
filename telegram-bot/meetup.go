@@ -30,7 +30,7 @@ type meetuplist struct {
 }
 
 //struct to keep track of OSDC meetups using a JSON file
-type nextmeetup struct {
+type meetupdata struct {
 	Name string `json: "Name"`
 	Date string `json: "Date"`
 }
@@ -56,7 +56,7 @@ func getMeetups(url string) {
 func addmeetup(ID int64, msgtext string) {
 	args := strings.Fields(msgtext)
 	if len(args) == 3 {
-		data := nextmeetup{
+		data := meetupdata{
 			Name: args[1],
 			Date: args[2],
 		}
@@ -64,16 +64,15 @@ func addmeetup(ID int64, msgtext string) {
 		_ = ioutil.WriteFile("meetups.json", file, 0644)
 		bot.Send(tbot.NewMessage(ID, "Meetup added successfully."))
 	} else {
-		bot.Send(tbot.NewMessage(ID, "Please provide the details of meetup. Like /addmeetup <Title> <Date>"))
+		bot.Send(tbot.NewMessage(ID, "Please provide the details of meetup in this format - /addmeetup <Title> <Date>"))
 	}
 }
 
-func getnextmeetup(ID int64) {
+func nextmeetup(ID int64) {
 	file, _ := ioutil.ReadFile("meetups.json")
-	data := nextmeetup{}
+	data := meetupdata{}
 	_ = json.Unmarshal([]byte(file), &data)
 	fmt.Println(data.Name)
 	nxtmeetupdata := "Title -" + "\t" + data.Name + "\n" + "Date -" + "\t" + data.Date
 	bot.Send(tbot.NewMessage(ID, nxtmeetupdata))
-
 }
