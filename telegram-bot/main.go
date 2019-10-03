@@ -73,7 +73,9 @@ func help(ID int64) {
 	/blog - to get the link of the OSDC blog.
 	/irc - to find us on IRC.
 	/xkcd - to get a xkcd comic for you.
-	/ncrmeetups - to get the list of upcoming meetups in Delhi NCR.
+	/meetups - to get the list of upcoming meetups in Delhi NCR.
+	/addmeetup - to add the details of next OSDC Meetup.(only for admins)
+	/nextmeetup - to get the details of next OSDC Meetup
 	To contribute to|modify this bot : https://github.com/vaibhavk/osdc-bots
 	`
 	bot.Send(tbot.NewMessage(ID, msg))
