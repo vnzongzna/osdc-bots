@@ -65,24 +65,25 @@ func xkcd(ID int64) {
 }
 
 func help(ID int64) {
-	msg := ` Use one of the following commands
-	/github - to get a link to OSDC's Github page.
-	/telegram - to get an invite link for OSDC's Telegram Group.
-	/twitter - to get the link of OSDC's twitter account.
-	/website - to get the link of the official website of OSDC.
-	/blog - to get the link of the OSDC blog.
-	/irc - to find us on IRC.
-	/xkcd - to get a xkcd comic for you.
-	/meetups - to get the list of upcoming meetups in Delhi NCR.
-	/addmeetup - to add the details of next OSDC Meetup.(only for admins)
-	/nextmeetup - to get the details of next OSDC Meetup
+	msg := ` Use one of the following commands to :
+	/github - Get a link to OSDC's Github page.
+	/telegram - Get an invite link for OSDC's Telegram Group.
+	/twitter - Get the link of OSDC's twitter account.
+	/website - Get the link of the official website of OSDC.
+	/blog - Get the link of the OSDC blog.
+	/irc - Find us on IRC.
+	/xkcd - Get a xkcd comic for you.
+	/dlmeetups - Get the list of upcoming meetups of Delhi/NCR communities.
+	/addmeetup* - Add the details of next OSDC Meetup.` + "\n" + `Format : /addmeetup <Title> <DD/MM/YYYY>
+	/nextmeetup - Get the details of next OSDC Meetup
 	To contribute to|modify this bot : https://github.com/vaibhavk/osdc-bots
+	* - Only for channel admins.
 	`
 	bot.Send(tbot.NewMessage(ID, msg))
 }
 
 //list of groups,keeps sending one by one to getmeetups()
-func ncrmeetups(ID int64) {
+func dlmeetups(ID int64) {
 	finallist = ""
 	urlnames := []string{"ilugdelhi", "pydelhi", "GDGNewDelhi", "gdgcloudnd", "Paytm-Build-for-India", "jslovers", "Gurgaon-Go-Meetup", "Mozilla_Delhi", "PyDataDelhi", "React-Delhi-NCR", "OWASP-Delhi-NCR-Chapter"}
 	for _, each := range urlnames {
@@ -161,8 +162,8 @@ func main() {
 				irc(ID)
 			case "xkcd":
 				xkcd(ID)
-			case "ncrmeetups":
-				ncrmeetups(ID)
+			case "dlmeetups":
+				dlmeetups(ID)
 			case "addmeetup":
 				check := memberdetails(ID, update.Message.From.ID)
 				if check == true {
