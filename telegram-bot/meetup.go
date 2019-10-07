@@ -35,7 +35,7 @@ type meetupdata struct {
 	Date string `json: "Date"`
 }
 
-//fetching details of meetup of the group's url
+//fetching details of meetup of the group's url from Meetup API
 func getMeetups(url string) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -53,6 +53,7 @@ func getMeetups(url string) {
 	}
 }
 
+//Slicing the arguments (title & date of next meetup) from message text and writing them to a json file.
 func addmeetup(ID int64, msgtext string) {
 	args := strings.Fields(msgtext)
 	if len(args) == 3 {
@@ -68,6 +69,7 @@ func addmeetup(ID int64, msgtext string) {
 	}
 }
 
+//fetching the details (Next Meetup Title & Date) from the JSON file
 func nextmeetup(ID int64) {
 	file, _ := ioutil.ReadFile("meetups.json")
 	data := meetupdata{}

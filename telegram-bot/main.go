@@ -42,6 +42,7 @@ func irc(ID int64) {
 	bot.Send(tbot.NewMessage(ID, "Join us on IRC server of Freenode at #jiit-lug. To get started refer our IRC wiki- https://github.com/osdc/community-committee/wiki/IRC ."))
 }
 
+//scraping xkcd strip URL from its website with the help of a random generated integer and then sending it as a photo using NewPhotoShare Telegram API method.
 func xkcd(ID int64) {
 	rand.Seed(time.Now().UnixNano())
 	min := 100
@@ -82,7 +83,7 @@ func help(ID int64) {
 	bot.Send(tbot.NewMessage(ID, msg))
 }
 
-//list of groups,keeps sending one by one to getmeetups()
+//list of meetup groups urlnames,keeps sending one by one to getmeetups() function in meetup.go
 func dlmeetups(ID int64) {
 	finallist = ""
 	urlnames := []string{"ilugdelhi", "pydelhi", "GDGNewDelhi", "gdgcloudnd", "Paytm-Build-for-India", "jslovers", "Gurgaon-Go-Meetup", "Mozilla_Delhi", "PyDataDelhi", "React-Delhi-NCR", "OWASP-Delhi-NCR-Chapter"}
@@ -100,6 +101,7 @@ func welcome(user tbot.User, ID int64) {
 	bot.Send(reply)
 }
 
+//extracts the details of the user who sent the message to check whether the user is creator/admin. Returns true in this case else false.
 func memberdetails(ID int64, userid int) bool {
 	response, _ := bot.GetChatMember(tbot.ChatConfigWithUser{
 		ChatID: ID,
@@ -111,6 +113,7 @@ func memberdetails(ID int64, userid int) bool {
 		return false
 	}
 }
+
 func kickUser(user int, ID int64) {
 	bot.KickChatMember(tbot.KickChatMemberConfig{
 		ChatMemberConfig: tbot.ChatMemberConfig{
